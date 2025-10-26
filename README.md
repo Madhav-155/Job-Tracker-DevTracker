@@ -406,5 +406,4 @@ Happy job hunting! 🚀
 - Light/Dark theme toggle with persistence; settings (glass intensity, animations) now persist across refresh
 - Accessibility and UX: improved tab ARIA labels; keyboard navigation; removed inline styles in HTML in favor of CSS utilities; visual tweaks to job card text for clarity
 - New profile menu: click the avatar to open quick actions (Add Job, Export JSON, Open Resume) and see mini KPIs at a glance
-#   J o b - T r a c k e r - D e v T r a c k e r  
- 
+#
