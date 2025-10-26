@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Modern job tracking and portfolio dashboard for developers">
+    <title>DevTracker | Job Tracking Dashboard</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Background Effects -->
+    <div class="background-effects">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-code"></i>
+                <h1>Dev<span>Tracker</span></h1>
+            </div>
+            
+            <div class="header-actions">
+                <div class="social-links" id="socialLinks">
+                    <!-- Populated dynamically -->
+                </div>
+                
+                <button class="icon-btn" id="resumeBtn" title="Resume Management" aria-label="Resume Management">
+                    <i class="fas fa-file-pdf"></i>
+                </button>
+                
+                <button class="icon-btn" id="themeToggle" title="Toggle Light/Dark Theme" aria-label="Toggle Theme">
+                    <i class="fas fa-adjust"></i>
+                </button>
+                
+                <div class="user-profile">
+                    <button class="avatar" id="avatarBtn" aria-haspopup="menu" aria-expanded="false" aria-controls="profileMenu" aria-label="Open profile menu">
+                        <i class="fas fa-user"></i>
+                    </button>
+                    <div class="profile-menu" id="profileMenu" role="menu" aria-labelledby="avatarBtn" aria-hidden="true">
+                        <div class="profile-section">
+                            <div class="section-title"><i class="fas fa-bolt"></i> Quick Actions</div>
+                            <div class="quick-actions">
+                                <button class="qa-btn" id="qaAddJob"><i class="fas fa-plus"></i> Add Job</button>
+                                <button class="qa-btn" id="qaExportJson"><i class="fas fa-file-code"></i> Export JSON</button>
+                                <button class="qa-btn" id="qaOpenResume"><i class="fas fa-file-pdf"></i> Open Resume</button>
+                            </div>
+                        </div>
+                        <div class="profile-section">
+                            <div class="section-title"><i class="fas fa-chart-line"></i> Mini KPIs</div>
+                            <div class="mini-kpis" id="miniKpis">
+                                <div class="mini-kpi"><i class="fas fa-paper-plane"></i><span class="label">JOBS</span><span class="value" id="miniApps">0</span></div>
+                                <div class="mini-kpi"><i class="fas fa-phone"></i><span class="label">Interviews</span><span class="value" id="miniInterviews">0</span></div>
+                                <div class="mini-kpi"><i class="fas fa-trophy"></i><span class="label">Offers</span><span class="value" id="miniOffers">0</span></div>
+                                <div class="mini-kpi"><i class="fas fa-percentage"></i><span class="label">Response</span><span class="value" id="miniResponse">0%</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- Tab Navigation -->
+        <nav class="tab-navigation" role="tablist" aria-label="Main navigation">
+            <button class="tab-btn active" id="dashboard" role="tab" aria-selected="true" aria-controls="dashboard-panel" data-tab="dashboard">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </button>
+            <button class="tab-btn" id="jobs" role="tab" aria-selected="false" aria-controls="jobs-panel" data-tab="jobs">
+                <i class="fas fa-briefcase"></i>
+                <span>Jobs</span>
+            </button>
+            <button class="tab-btn" id="projects" role="tab" aria-selected="false" aria-controls="projects-panel" data-tab="projects">
+                <i class="fas fa-rocket"></i>
+                <span>Projects</span>
+            </button>
+            <button class="tab-btn" id="settings" role="tab" aria-selected="false" aria-controls="settings-panel" data-tab="settings">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </button>
+            <button class="tab-btn" id="help" role="tab" aria-selected="false" aria-controls="help-panel" data-tab="help">
+                <i class="fas fa-question-circle"></i>
+                <span>Help</span>
+            </button>
+        </nav>
+
+        <!-- Tab Panels -->
+        <div class="tab-content">
+            <!-- Dashboard Panel -->
+            <section id="dashboard-panel" class="tab-panel active" role="tabpanel" aria-labelledby="dashboard">
+                <div class="panel-header">
+                    <h2>Analytics Dashboard</h2>
+                    <div class="panel-actions">
+                        <input type="date" id="filterDateFrom" class="input-field compact" aria-label="Filter from date">
+                        <input type="date" id="filterDateTo" class="input-field compact" aria-label="Filter to date">
+                        <button class="btn-secondary compact" id="applyFilters">
+                            <i class="fas fa-filter"></i> Apply
+                        </button>
+                    </div>
+                </div>
+
+                <!-- KPI Cards -->
+                <div class="kpi-grid" id="kpiGrid">
+                    <div class="kpi-card glass-card">
+                        <div class="kpi-icon">
+                            <i class="fas fa-paper-plane"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <span class="kpi-label">Total Applications</span>
+                            <span class="kpi-value" id="kpiTotalApps">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card glass-card">
+                        <div class="kpi-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <span class="kpi-label">Interviews</span>
+                            <span class="kpi-value" id="kpiInterviews">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card glass-card">
+                        <div class="kpi-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <span class="kpi-label">Offers</span>
+                            <span class="kpi-value" id="kpiOffers">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card glass-card">
+                        <div class="kpi-icon">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <span class="kpi-label">Response Rate</span>
+                            <span class="kpi-value" id="kpiResponseRate">0%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card glass-card">
+                        <div class="kpi-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <span class="kpi-label">Avg Time-to-Offer</span>
+                            <span class="kpi-value" id="kpiAvgTime">0d</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Grid -->
+                <div class="charts-grid">
+                    <div class="chart-card glass-card">
+                        <h3>Applications Over Time</h3>
+                        <canvas id="applicationsTimeChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-card glass-card">
+                        <h3>Status Distribution</h3>
+                        <canvas id="statusDistributionChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-card glass-card">
+                        <h3>Conversion Funnel</h3>
+                        <canvas id="conversionFunnelChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-card glass-card">
+                        <h3>Tags Breakdown</h3>
+                        <canvas id="tagsBreakdownChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-card glass-card full-width">
+                        <h3>Top Companies</h3>
+                        <div id="topCompaniesTable"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Jobs Panel -->
+            <section id="jobs-panel" class="tab-panel" role="tabpanel" aria-labelledby="jobs">
+                <div class="panel-header">
+                    <h2>Job Applications</h2>
+                    <div class="panel-actions">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="jobSearch" placeholder="Search jobs..." aria-label="Search jobs">
+                        </div>
+                        <button class="btn-primary" id="addJobBtn">
+                            <i class="fas fa-plus"></i> Add Job
+                        </button>
+                        <div class="dropdown">
+                            <button class="btn-secondary dropdown-toggle" id="exportDropdown">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                            <div class="dropdown-menu" id="exportMenu">
+                                <button data-export="xlsx"><i class="fas fa-file-excel"></i> Export to Excel</button>
+                                <button data-export="docx"><i class="fas fa-file-word"></i> Export to Word</button>
+                                <button data-export="csv"><i class="fas fa-file-csv"></i> Export to CSV</button>
+                                <button data-export="json"><i class="fas fa-file-code"></i> Backup JSON</button>
+                            </div>
+                        </div>
+                        <label class="btn-secondary file-input-label">
+                            <i class="fas fa-upload"></i> Import
+                            <input type="file" id="importJobsFile" accept=".xlsx,.json" hidden>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- View Toggle -->
+                <div class="view-controls">
+                    <div class="view-toggle">
+                        <button class="view-btn active" data-view="cards" aria-label="Card view">
+                            <i class="fas fa-th-large"></i>
+                        </button>
+                        <button class="view-btn" data-view="list" aria-label="List view">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="filter-chips" id="filterChips">
+                        <button class="chip active" data-filter="all">All</button>
+                        <button class="chip" data-filter="Applied">Applied</button>
+                        <button class="chip" data-filter="Phone">Phone</button>
+                        <button class="chip" data-filter="Interview">Interview</button>
+                        <button class="chip" data-filter="Offer">Offer</button>
+                        <button class="chip" data-filter="Rejected">Rejected</button>
+                    </div>
+                </div>
+
+                <!-- Jobs Grid/List -->
+                <div id="jobsContainer" class="jobs-grid">
+                    <!-- Populated dynamically -->
+                </div>
+            </section>
+
+            <!-- Projects Panel -->
+            <section id="projects-panel" class="tab-panel" role="tabpanel" aria-labelledby="projects">
+                <div class="panel-header">
+                    <h2>Portfolio & Projects</h2>
+                    <div class="panel-actions">
+                        <button class="btn-primary" id="addProjectBtn">
+                            <i class="fas fa-plus"></i> Add Project
+                        </button>
+                    </div>
+                </div>
+
+                <div class="filter-chips">
+                    <button class="chip active" data-project-filter="all">All Projects</button>
+                    <button class="chip" data-project-filter="portfolio">Portfolio</button>
+                    <button class="chip" data-project-filter="job-related">Job-Related</button>
+                </div>
+
+                <div id="projectsContainer" class="projects-grid">
+                    <!-- Populated dynamically -->
+                </div>
+            </section>
+
+            <!-- Settings Panel -->
+            <section id="settings-panel" class="tab-panel" role="tabpanel" aria-labelledby="settings">
+                <div class="panel-header">
+                    <h2>Settings</h2>
+                </div>
+
+                <div class="settings-grid">
+                    <div class="settings-card glass-card">
+                        <h3><i class="fas fa-palette"></i> Appearance</h3>
+                        <div class="setting-item">
+                            <label for="glassIntensity">Glass Effect Intensity</label>
+                            <p class="setting-help mb-8">
+                                Controls the blur and transparency of cards. Higher values = more blur and transparency (stronger glassmorphism effect).
+                            </p>
+                            <input type="range" id="glassIntensity" min="1" max="10" value="5">
+                            <div class="range-scale">
+                                <span>Subtle</span>
+                                <span>Moderate</span>
+                                <span>Intense</span>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <label for="animationToggle">
+                                <input type="checkbox" id="animationToggle" checked>
+                                Enable Animations
+                            </label>
+                            <p class="setting-help mt-4 ml-24">
+                                Enables smooth transitions, hover effects, and entrance animations throughout the app.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="settings-card glass-card">
+                        <h3><i class="fas fa-link"></i> Social Links</h3>
+                        <div id="socialLinksSettings">
+                            <!-- Populated dynamically -->
+                        </div>
+                        <button class="btn-secondary" id="addSocialLinkBtn">
+                            <i class="fas fa-plus"></i> Add Link
+                        </button>
+                    </div>
+
+                    <div class="settings-card glass-card">
+                        <h3><i class="fas fa-file-pdf"></i> Resume Management</h3>
+                        <div id="resumeManagement">
+                            <div class="resume-status" id="resumeStatus">
+                                <p>No resume uploaded</p>
+                            </div>
+                            <label class="btn-primary file-input-label">
+                                <i class="fas fa-upload"></i> Upload Resume
+                                <input type="file" id="resumeUpload" accept=".pdf,.doc,.docx" hidden>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-card glass-card">
+                        <h3><i class="fas fa-database"></i> Data Management</h3>
+                        <button class="btn-secondary" id="exportAllData">
+                            <i class="fas fa-download"></i> Export All Data (JSON)
+                        </button>
+                        <label class="btn-secondary file-input-label">
+                            <i class="fas fa-upload"></i> Import Data
+                            <input type="file" id="importAllData" accept=".json" hidden>
+                        </label>
+                        <button class="btn-danger" id="resetAllData">
+                            <i class="fas fa-exclamation-triangle"></i> Reset All Data
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Help Panel -->
+            <section id="help-panel" class="tab-panel" role="tabpanel" aria-labelledby="help">
+                <div class="panel-header">
+                    <h2>Help & Documentation</h2>
+                </div>
+
+                <div class="help-grid">
+                    <div class="help-card glass-card">
+                        <h3><i class="fas fa-keyboard"></i> Keyboard Shortcuts</h3>
+                        <ul class="shortcuts-list">
+                            <li><kbd>Tab</kbd> Navigate between elements</li>
+                            <li><kbd>Enter</kbd> / <kbd>Space</kbd> Activate buttons</li>
+                            <li><kbd>Esc</kbd> Close modals</li>
+                            <li><kbd>Ctrl</kbd> + <kbd>N</kbd> Add new job (when on Jobs tab)</li>
+                            <li><kbd>Ctrl</kbd> + <kbd>E</kbd> Export current view</li>
+                        </ul>
+                    </div>
+
+                    <div class="help-card glass-card">
+                        <h3><i class="fas fa-universal-access"></i> Accessibility</h3>
+                        <p>This application is built with accessibility in mind:</p>
+                        <ul>
+                            <li>Full keyboard navigation support</li>
+                            <li>ARIA labels and roles</li>
+                            <li>Light/Dark theme available</li>
+                            <li>Animations can be disabled in Settings</li>
+                        </ul>
+                    </div>
+
+                    <div class="help-card glass-card">
+                        <h3><i class="fas fa-question"></i> FAQ</h3>
+                        <details>
+                            <summary>Where is my data stored?</summary>
+                            <p>All data is stored locally in your browser using IndexedDB and localStorage. No data leaves your device unless you explicitly export it.</p>
+                        </details>
+                        <details>
+                            <summary>How do I backup my data?</summary>
+                            <p>Go to Settings > Data Management and click "Export All Data (JSON)". This will download a complete backup.</p>
+                        </details>
+                        <details>
+                            <summary>Can I use this offline?</summary>
+                            <p>Yes! After the initial load, the app works completely offline.</p>
+                        </details>
+                        <details>
+                            <summary>How do I add a new field to job entries?</summary>
+                            <p>See the README.md file for developer instructions on extending the DATA_MODEL.</p>
+                        </details>
+                    </div>
+
+                    <div class="help-card glass-card">
+                        <h3><i class="fas fa-shield-alt"></i> Privacy & Security</h3>
+                        <p>Your privacy is important:</p>
+                        <ul>
+                            <li>No external API calls</li>
+                            <li>No tracking or analytics</li>
+                            <li>All processing happens locally</li>
+                            <li>You control your data</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal Container -->
+    <div id="modalContainer"></div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- External Libraries (loaded via CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.8.2/docx.min.js"></script>
+    
+    <!-- Main Application -->
+    <script src="app.js"></script>
+</body>
+</html>
