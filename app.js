@@ -879,9 +879,35 @@ const UI = {
     openJobModal: function(jobId = null) {
         const job = jobId ? AppState.jobs.find(j => j.id === jobId) : null;
         const isEdit = !!job;
+        // Helpers for local ISO date (yyyy-mm-dd)
+        const toLocalISO = (date) => {
+            const d = new Date(date);
+            const tz = d.getTimezoneOffset();
+            const local = new Date(d.getTime() - tz * 60000);
+            return local.toISOString().split('T')[0];
+        };
+        const addDaysISO = (iso, days) => {
+            const d = new Date(iso);
+            d.setDate(d.getDate() + days);
+            return toLocalISO(d);
+        };
+        const todayISO = toLocalISO(new Date());
+        const defaultAppliedISO = isEdit ? (job?.appliedDate || todayISO) : todayISO;
         
         const formFields = Object.entries(DATA_MODEL.job).map(([key, field]) => {
-            const value = job ? (job[key] || '') : '';
+            let value = job ? (job[key] || '') : '';
+            // Defaults for new job
+            if (!isEdit && key === 'appliedDate' && !value) {
+                value = defaultAppliedISO;
+            }
+            if (!isEdit && key === 'nextActionDate' && !value) {
+                value = addDaysISO(defaultAppliedISO, 4);
+            }
+            // When editing, if nextActionDate empty, prefill based on appliedDate
+            if (isEdit && key === 'nextActionDate' && !value) {
+                const base = job?.appliedDate ? job.appliedDate : todayISO;
+                value = addDaysISO(base, 4);
+            }
             
             if (field.type === 'select') {
                 return `
@@ -959,6 +985,16 @@ const UI = {
         `;
 
         document.getElementById('modalContainer').innerHTML = modal;
+
+        // Link applied date change -> next action date (+4 days)
+        const appliedInput = document.getElementById('appliedDate');
+        const nextInput = document.getElementById('nextActionDate');
+        if (appliedInput && nextInput) {
+            appliedInput.addEventListener('change', function() {
+                const base = this.value || todayISO;
+                nextInput.value = addDaysISO(base, 4);
+            });
+        }
     },
 
     openProjectModal: function(projectId = null) {
