@@ -333,16 +333,50 @@
 
                     <div class="settings-card glass-card">
                         <h3><i class="fas fa-database"></i> Data Management</h3>
-                        <button class="btn-secondary" id="exportAllData">
-                            <i class="fas fa-download"></i> Export All Data (JSON)
-                        </button>
-                        <label class="btn-secondary file-input-label">
-                            <i class="fas fa-upload"></i> Import Data
-                            <input type="file" id="importAllData" accept=".json" hidden>
-                        </label>
-                        <button class="btn-danger" id="resetAllData">
-                            <i class="fas fa-exclamation-triangle"></i> Reset All Data
-                        </button>
+                        
+                        <!-- JSON backup -->
+                        <div class="setting-section">
+                            <h4>JSON Backup</h4>
+                            <button class="btn-secondary" id="exportAllData">
+                                <i class="fas fa-download"></i> Export All Data (JSON)
+                            </button>
+                            <label class="btn-secondary file-input-label">
+                                <i class="fas fa-upload"></i> Import Data
+                                <input type="file" id="importAllData" accept=".json" hidden>
+                            </label>
+                        </div>
+                        
+                        <!-- Excel sync -->
+                        <div class="setting-section">
+                            <h4>Excel File Sync</h4>
+                            <p id="excelSyncStatus" class="excel-sync-status">
+                                Checking Excel sync availability...
+                            </p>
+                            
+                            <div class="excel-sync-buttons">
+                                <button id="saveToExcel" class="btn-secondary">
+                                    <i class="fas fa-save"></i> Save to Excel
+                                </button>
+                                <button id="loadFromExcel" class="btn-secondary">
+                                    <i class="fas fa-sync"></i> Load from Excel
+                                </button>
+                                <button id="downloadExcel" class="btn-secondary">
+                                    <i class="fas fa-file-excel"></i> Download Excel
+                                </button>
+                            </div>
+                            
+                            <div class="excel-sync-info">
+                                <p><i class="fas fa-info-circle"></i> Excel sync requires the backend server to be running.</p>
+                                <p>Backups are created automatically in backend/data/backups/.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-section danger-zone">
+                            <h4>Danger Zone</h4>
+                            <button class="btn-danger" id="resetAllData">
+                                <i class="fas fa-exclamation-triangle"></i> Reset All Data
+                            </button>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -423,6 +457,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.8.2/docx.min.js"></script>
+    
+    <!-- API Integration -->
+    <script src="api-integration.js"></script>
+    
+    <!-- Excel Sync -->
+    <link rel="stylesheet" href="excel-sync.css">
+    <script src="excel-sync.js"></script>
     
     <!-- Main Application -->
     <script src="app.js"></script>

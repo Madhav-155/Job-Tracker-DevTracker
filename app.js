@@ -78,6 +78,16 @@ const Storage = {
     // Jobs
     saveJobs: function(jobs) {
         localStorage.setItem('devtracker_jobs', JSON.stringify(jobs));
+        // Try to sync to server-side Excel file if available (optional)
+        try {
+            if (window._FILEDB_AVAILABLE) {
+                fetch('/api/filedb', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ jobs })
+                }).catch(() => { /* ignore sync errors */ });
+            }
+        } catch (e) { /* ignore */ }
     },
     
     loadJobs: function() {
@@ -88,6 +98,15 @@ const Storage = {
     // Projects
     saveProjects: function(projects) {
         localStorage.setItem('devtracker_projects', JSON.stringify(projects));
+        try {
+            if (window._FILEDB_AVAILABLE) {
+                fetch('/api/filedb', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ projects })
+                }).catch(() => { /* ignore */ });
+            }
+        } catch (e) { /* ignore */ }
     },
     
     loadProjects: function() {
@@ -108,6 +127,15 @@ const Storage = {
     // Settings
     saveSettings: function(settings) {
         localStorage.setItem('devtracker_settings', JSON.stringify(settings));
+        try {
+            if (window._FILEDB_AVAILABLE) {
+                fetch('/api/filedb', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ settings })
+                }).catch(() => { /* ignore */ });
+            }
+        } catch (e) { /* ignore */ }
     },
     
     loadSettings: function() {
@@ -1880,14 +1908,37 @@ async function init() {
     // Initialize storage
     await Storage.init();
     
-    // Load data from storage
-    AppState.jobs = Storage.loadJobs();
-    AppState.projects = Storage.loadProjects();
-    AppState.socialLinks = Storage.loadSocialLinks();
-    AppState.settings = Storage.loadSettings();
+    // Attempt to load data from server-side Excel file (if backend file-db is running)
+    try {
+        const res = await fetch('/api/filedb');
+        if (res.ok) {
+            const json = await res.json();
+            if (json && json.success && json.data) {
+                const d = json.data;
+                AppState.jobs = Array.isArray(d.jobs) ? d.jobs : [];
+                AppState.projects = Array.isArray(d.projects) ? d.projects : [];
+                AppState.settings = d.settings && Object.keys(d.settings).length ? d.settings : AppState.settings;
+                // persist to localStorage for offline use
+                Storage.saveJobs(AppState.jobs);
+                Storage.saveProjects(AppState.projects);
+                Storage.saveSettings(AppState.settings);
+                window._FILEDB_AVAILABLE = true;
+                Utils.showToast('Loaded data from Excel file (server)', 'success');
+            }
+        }
+    } catch (e) {
+        // server not available — fallback to local storage
+        window._FILEDB_AVAILABLE = false;
+    }
+
+    // Load data from local storage (if server import not used or empty)
+    AppState.jobs = AppState.jobs.length ? AppState.jobs : Storage.loadJobs();
+    AppState.projects = AppState.projects.length ? AppState.projects : Storage.loadProjects();
+    AppState.socialLinks = AppState.socialLinks.length ? AppState.socialLinks : Storage.loadSocialLinks();
+    AppState.settings = AppState.settings && Object.keys(AppState.settings).length ? AppState.settings : Storage.loadSettings();
     
     // Generate seed data if needed (comment this out in production)
-    generateSeedData();
+    // generateSeedData();  // DISABLED: Prevents accidental data reset
     
     // Apply theme
     const savedTheme = AppState.settings.theme || 'dark';

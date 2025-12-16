@@ -1,0 +1,26 @@
+<!-- Excel Sync Section (insert in settings panel) -->
+<div class="setting-card">
+    <h3>Excel File Sync</h3>
+    <div class="setting-content">
+        <p id="excelSyncStatus" style="font-size: 0.9em; color: var(--text-tertiary); margin-bottom: 12px;">
+            Checking Excel sync availability...
+        </p>
+        
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button id="saveToExcel" class="btn-secondary">
+                <i class="fas fa-save"></i> Save to Excel
+            </button>
+            <button id="loadFromExcel" class="btn-secondary">
+                <i class="fas fa-sync"></i> Load from Excel
+            </button>
+            <button id="downloadExcel" class="btn-secondary">
+                <i class="fas fa-file-excel"></i> Download Excel
+            </button>
+        </div>
+        
+        <div style="font-size: 0.8em; color: var(--text-tertiary); margin-top: 12px;">
+            <p><i class="fas fa-info-circle"></i> Excel sync requires the backend server to be running.</p>
+            <p style="margin-top: 4px;">Backups are created automatically in backend/data/backups/.</p>
+        </div>
+    </div>
+</div>

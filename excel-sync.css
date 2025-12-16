@@ -1,0 +1,21 @@
+.excel-sync-status {
+    font-size: 0.9em;
+    color: var(--text-tertiary);
+    margin-bottom: 12px;
+}
+
+.excel-sync-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.excel-sync-info {
+    font-size: 0.8em;
+    color: var(--text-tertiary);
+    margin-top: 12px;
+}
+
+.excel-sync-info p + p {
+    margin-top: 4px;
+}
